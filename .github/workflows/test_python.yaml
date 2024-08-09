@@ -22,8 +22,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
+        python-version: [ '3.8', '3.9', '3.10', '3.11', '3.12' ]
+    env:
+      MINIMUM_SUPPORTED_SPHINX_VERSION: '4.3.2'
     steps:
       - uses: actions/checkout@v4
       ##################################################################################
@@ -52,15 +54,15 @@ jobs:
         run: |
           pip install tox codecov coverage
       # Sphinx 4.3.2 ###################################################################
-      - name: Test Python ${{ matrix.python-version }} / sphinx==4.3.2
+      - name: Test Python ${{ matrix.python-version }} / sphinx==${{ env.MINIMUM_SUPPORTED_SPHINX_VERSION }}
         env:
           # NOTE: this is the current minimum supported.
-          SPHINX_VERSION: '==4.3.2'
+          SPHINX_VERSION: '==${{ env.MINIMUM_SUPPORTED_SPHINX_VERSION }}'
         run: |
           tox -e py -- --cov-report xml:coverage.xml --cov
-      - name: Upload Code Coverage for Python ${{ matrix.python-version }} / sphinx==4.3.2
+      - name: Upload Code Coverage for Python ${{ matrix.python-version }} / sphinx==${{ env.MINIMUM_SUPPORTED_SPHINX_VERSION }}
         run: |
-          codecov --required -X gcov -f coverage.xml --name "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx4.3.2"
+          codecov --required -X gcov -f coverage.xml --name "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx${{ env.MINIMUM_SUPPORTED_SPHINX_VERSION }}"
       # Don't let code coverage utilities share anything, force clean it all.
       - name: Cleanup Python ${{ matrix.python-version }} Testing / Coverage Artifacts
         run: |
