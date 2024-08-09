@@ -61,8 +61,14 @@ jobs:
         run: |
           tox -e py -- --cov-report xml:coverage.xml --cov
       - name: Upload Code Coverage for Python ${{ matrix.python-version }} / sphinx==${{ env.MINIMUM_SUPPORTED_SPHINX_VERSION }}
-        run: |
-          codecov --required -X gcov -f coverage.xml --name "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx${{ env.MINIMUM_SUPPORTED_SPHINX_VERSION }}"
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          file: coverage.xml
+          name: "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx${{ env.MINIMUM_SUPPORTED_SPHINX_VERSION }}"
+          # this the inverted translation of `-X gcov`
+          plugins: pycoverage,xcode
       # Don't let code coverage utilities share anything, force clean it all.
       - name: Cleanup Python ${{ matrix.python-version }} Testing / Coverage Artifacts
         run: |
@@ -78,8 +84,13 @@ jobs:
         run: |
           tox -e py -- --cov-report xml:coverage.xml --cov
       - name: Upload Code Coverage for Python ${{ matrix.python-version }} / sphinx 5.x
-        run: |
-          codecov --required -X gcov -f coverage.xml --name "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx5.x"
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          file: coverage.xml
+          name: "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx5.x"
+          plugins: pycoverage,xcode
       # Don't let code coverage utilities share anything, force clean it all.
       - name: Cleanup Python ${{ matrix.python-version }} Testing / Coverage Artifacts
         run: |
@@ -95,8 +106,13 @@ jobs:
         run: |
           tox -e py -- --cov-report xml:coverage.xml --cov
       - name: Upload Code Coverage for Python ${{ matrix.python-version }} / sphinx 6.x
-        run: |
-          codecov --required -X gcov -f coverage.xml --name "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx6.x"
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          file: coverage.xml
+          name: "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx6.x"
+          plugins: pycoverage,xcode
       # Sphinx 7.x #####################################################################
       - name: Test Python ${{ matrix.python-version }} / sphinx 7.x
         env:
@@ -107,6 +123,12 @@ jobs:
         run: |
           tox -e py -- --cov-report xml:coverage.xml --cov
       - name: Upload Code Coverage for Python ${{ matrix.python-version }} / sphinx 7.x
-        run: |
-          codecov --required -X gcov -f coverage.xml --name "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx7.x"
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          file: coverage.xml
+          name: "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx7.x"
+          plugins: pycoverage,xcode
+
 
