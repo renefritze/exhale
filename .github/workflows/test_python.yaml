@@ -53,98 +53,46 @@ jobs:
       - name: Install Python Tools
         run: |
           pip install tox codecov coverage
-      # Sphinx MINIMUM_SUPPORTED_SPHINX_VERSION ###################################################################
+
       - name: Test Python ${{ matrix.python-version }} / sphinx==${{ env.MINIMUM_SUPPORTED_SPHINX_VERSION }}
-        env:
-          # NOTE: this is the current minimum supported.
-          SPHINX_VERSION: '==${{ env.MINIMUM_SUPPORTED_SPHINX_VERSION }}'
-        run: |
-          tox -e py -- --cov-report xml:coverage.xml --cov
-      - name: Upload Code Coverage for Python ${{ matrix.python-version }} / sphinx==${{ env.MINIMUM_SUPPORTED_SPHINX_VERSION }}
-        uses: codecov/codecov-action@v4
+        uses: ./.github/actions/sphinx_version_tests
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
-          file: coverage.xml
-          name: "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx${{ env.MINIMUM_SUPPORTED_SPHINX_VERSION }}"
-          # this the inverted translation of `-X gcov`
-          plugins: pycoverage,xcode
-      # Don't let code coverage utilities share anything, force clean it all.
-      - name: Cleanup Python ${{ matrix.python-version }} Testing / Coverage Artifacts
-        run: |
-          mv .gitignore nolongerignored
-          git clean -n
-          git clean -f
-          git reset --hard
-      # Sphinx 5.x #####################################################################
+          python-version: ${{ matrix.python-version }}
+          os: ${{ matrix.os }}
+          sphinx_version_range: '==${{ env.MINIMUM_SUPPORTED_SPHINX_VERSION }}'
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Test Python ${{ matrix.python-version }} / sphinx 5.x
-        env:
-          # Test sphinx 5.x.
-          SPHINX_VERSION: '>=5,<6'
-        run: |
-          tox -e py -- --cov-report xml:coverage.xml --cov
-      - name: Upload Code Coverage for Python ${{ matrix.python-version }} / sphinx 5.x
-        uses: codecov/codecov-action@v4
+        uses: ./.github/actions/sphinx_version_tests
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
-          file: coverage.xml
-          name: "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx5.x"
-          plugins: pycoverage,xcode
-      # Don't let code coverage utilities share anything, force clean it all.
-      - name: Cleanup Python ${{ matrix.python-version }} Testing / Coverage Artifacts
-        run: |
-          mv .gitignore nolongerignored
-          git clean -n
-          git clean -f
-          git reset --hard
-      # Sphinx 6.x #####################################################################
+          python-version: ${{ matrix.python-version }}
+          os: ${{ matrix.os }}
+          sphinx_version_range: '>=5,<6'
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Test Python ${{ matrix.python-version }} / sphinx 6.x
-        env:
-          # Test sphinx 6.x.
-          SPHINX_VERSION: '>=6,<7'
-        run: |
-          tox -e py -- --cov-report xml:coverage.xml --cov
-      - name: Upload Code Coverage for Python ${{ matrix.python-version }} / sphinx 6.x
-        uses: codecov/codecov-action@v4
+        uses: ./.github/actions/sphinx_version_tests
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
-          file: coverage.xml
-          name: "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx6.x"
-          plugins: pycoverage,xcode
-      # Sphinx 7.x #####################################################################
+          python-version: ${{ matrix.python-version }}
+          os: ${{ matrix.os }}
+          sphinx_version_range: '>=6,<7'
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Test Python ${{ matrix.python-version }} / sphinx 7.x
-        env:
-          # Test sphinx 7.x.
-          # TODO: breathe does not currently support later sphinx.
-          # https://github.com/svenevs/exhale/issues/203#issuecomment-1773060684
-          SPHINX_VERSION: '>=7,<7.2'
-        run: |
-          tox -e py -- --cov-report xml:coverage.xml --cov
-      - name: Upload Code Coverage for Python ${{ matrix.python-version }} / sphinx 7.x
-        uses: codecov/codecov-action@v4
+        uses: ./.github/actions/sphinx_version_tests
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
-          file: coverage.xml
-          name: "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx7.x"
-          plugins: pycoverage,xcode
-      # Sphinx 8.x #####################################################################
+          python-version: ${{ matrix.python-version }}
+          os: ${{ matrix.os }}
+          sphinx_version_range: '>=7,<7.2'
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Test Python ${{ matrix.python-version }} / sphinx 8.x
-        env:
-          # Test sphinx 8.x.
-          # TODO: breathe does not currently support later sphinx.
-          # https://github.com/svenevs/exhale/issues/203#issuecomment-1773060684
-          SPHINX_VERSION: '>=8,<9'
-        run: |
-          tox -e py -- --cov-report xml:coverage.xml --cov
-      - name: Upload Code Coverage for Python ${{ matrix.python-version }} / sphinx 8.x
-        uses: codecov/codecov-action@v4
+        uses: ./.github/actions/sphinx_version_tests
+        # sphinx >=8 needs py >= 3.10
+        if: matrix.python-version != '3.8' && matrix.python-version != '3.9'
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
-          file: coverage.xml
-          name: "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx8.x"
-          plugins: pycoverage,xcode
+          python-version: ${{ matrix.python-version }}
+          os: ${{ matrix.os }}
+          sphinx_version_range: '>=8,<9'
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
