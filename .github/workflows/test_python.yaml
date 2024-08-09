@@ -130,5 +130,21 @@ jobs:
           file: coverage.xml
           name: "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx7.x"
           plugins: pycoverage,xcode
-
+      # Sphinx 8.x #####################################################################
+      - name: Test Python ${{ matrix.python-version }} / sphinx 8.x
+        env:
+          # Test sphinx 8.x.
+          # TODO: breathe does not currently support later sphinx.
+          # https://github.com/svenevs/exhale/issues/203#issuecomment-1773060684
+          SPHINX_VERSION: '>=8,<9'
+        run: |
+          tox -e py -- --cov-report xml:coverage.xml --cov
+      - name: Upload Code Coverage for Python ${{ matrix.python-version }} / sphinx 8.x
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          file: coverage.xml
+          name: "[GHA] ${{ matrix.os }}-py${{ matrix.python-version }}-sphinx8.x"
+          plugins: pycoverage,xcode
 
